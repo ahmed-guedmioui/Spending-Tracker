@@ -1,9 +1,14 @@
 package com.ag_apps.spending_tracker.core.data
 
 import com.ag_apps.spending_tracker.core.data.local.SpendingDao
+import com.ag_apps.spending_tracker.core.data.local.SpendingEntity
 import com.ag_apps.spending_tracker.core.domain.LocalSpendingDataSource
 import com.ag_apps.spending_tracker.core.domain.Spending
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -30,11 +35,11 @@ class RoomSpendingDataSource(
     }
 
     override suspend fun getAllDates(): List<ZonedDateTime> {
-        val uniqueDates = mutableSetOf<ZonedDateTime>()
+        val uniqueDates = mutableSetOf<LocalDate>()
         return dao.getAllDates()
             .map { Instant.parse(it).atZone(ZoneId.of("UTC")) }
             .filter {
-                uniqueDates.add(it)
+                uniqueDates.add(it.toLocalDate())
             }
     }
 

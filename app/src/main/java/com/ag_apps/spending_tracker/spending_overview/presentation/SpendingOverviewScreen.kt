@@ -174,7 +174,7 @@ fun SpendingList(
         itemsIndexed(state.spendingList) { index, spending ->
             SpendingItem(
                 spending = spending,
-                onDeleteSpending = { onDeleteSpending(index) },
+                onDeleteSpending = { onDeleteSpending(spending.spendingId ?: -1) },
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -270,7 +270,7 @@ fun SpendingInfo(
 ) {
     Row {
         Text(
-            text = "$name :",
+            text = "$name:  ",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Normal,

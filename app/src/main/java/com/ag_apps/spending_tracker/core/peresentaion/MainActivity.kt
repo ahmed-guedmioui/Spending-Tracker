@@ -17,6 +17,7 @@ import com.ag_apps.spending_tracker.balance.presentation.BalanceScreenCore
 import com.ag_apps.spending_tracker.core.peresentaion.ui.theme.SpendingTrackerTheme
 import com.ag_apps.spending_tracker.core.peresentaion.util.Background
 import com.ag_apps.spending_tracker.core.peresentaion.util.Screen
+import com.ag_apps.spending_tracker.spending_details.presentation.SpendingDetailsScreenCore
 import com.ag_apps.spending_tracker.spending_overview.presentation.SpendingOverviewScreenCore
 
 class MainActivity : ComponentActivity() {
@@ -48,18 +49,17 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(Screen.Balance)
                     },
                     onAddSpendingClick = {
-                        navController.navigate(Screen.SpendingDetails)
+                        navController.navigate(Screen.SpendingDetails(-1))
                     }
                 )
             }
 
             composable<Screen.SpendingDetails> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Spending Details")
-                }
+                SpendingDetailsScreenCore(
+                    onSaveSpending = {
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable<Screen.Balance> {
