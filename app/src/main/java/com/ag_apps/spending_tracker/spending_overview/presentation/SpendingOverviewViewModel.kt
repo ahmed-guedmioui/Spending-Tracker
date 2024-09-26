@@ -28,8 +28,27 @@ class SpendingOverviewViewModel(
             SpendingOverviewAction.LoadSpendingOverviewAndBalance -> {
                 loadSpendingListAndBalance()
             }
-            is SpendingOverviewAction.OnDateChange -> TODO()
-            is SpendingOverviewAction.OnDeleteSpending -> TODO()
+
+            is SpendingOverviewAction.OnDateChange -> {
+                val newDate = state.dateList[action.newDate]
+                viewModelScope.launch {
+                    state = state.copy(
+                        pickedDate = newDate,
+                        spendingList = getSpendingListByDate(newDate)
+                    )
+                }
+            }
+
+            is SpendingOverviewAction.OnDeleteSpending -> {
+                viewModelScope.launch {
+                    spendingDataSource.deleteSpending(action.spendingId)
+                    state = state.copy(
+                        spendingList = getSpendingListByDate(state.pickedDate),
+                        dateList = spendingDataSource.getAllDates(),
+                        balance = coreRepository.getBalance() - spendingDataSource.getSpendBalance(),
+                    )
+                }
+            }
         }
     }
 
@@ -44,9 +63,60 @@ class SpendingOverviewViewModel(
                 ),
                 balance = coreRepository.getBalance() - spendingDataSource.getSpendBalance(),
                 pickedDate = allDates.lastOrNull() ?: ZonedDateTime.now(),
-                datesList = allDates.reversed()
+                dateList = allDates.reversed()
             )
 
+            val dummy  = listOf(
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 34.3,
+                    spendingId = null
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 34.3,
+                    spendingId = null
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 34.3,
+                    spendingId = null
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 34.3,
+                    spendingId = null
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 34.3,
+                    spendingId = null
+                )
+            )
+
+            state = state.copy(
+                spendingList = dummy
+            )
         }
     }
 
